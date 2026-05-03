@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hypothesis Testing — Study Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=IBM+Plex+Mono:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0f0e17;
+    --surface:  #1a1928;
+    --surface2: #22203a;
+    --border:   #2e2c4a;
+    --accent:   #f5a623;
+    --accent2:  #e05c5c;
+    --accent3:  #5ce0b8;
+    --accent4:  #a78bfa;
+    --text:     #e8e6f0;
+    --muted:    #8f8daa;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── Atmospheric background ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 20%, rgba(167,139,250,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(245,166,35,0.05) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 70% 15%, rgba(92,224,184,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Floating orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    animation: drift 14s ease-in-out infinite alternate;
+  }
+  .orb-1 {
+    width: 320px; height: 320px;
+    top: -80px; left: -80px;
+    background: radial-gradient(circle, rgba(167,139,250,0.07) 0%, transparent 70%);
+    animation-duration: 18s;
+  }
+  .orb-2 {
+    width: 240px; height: 240px;
+    bottom: -60px; right: -60px;
+    background: radial-gradient(circle, rgba(245,166,35,0.06) 0%, transparent 70%);
+    animation-duration: 22s;
+    animation-delay: -6s;
+  }
+  .orb-3 {
+    width: 180px; height: 180px;
+    top: 50%; right: 10%;
+    background: radial-gradient(circle, rgba(92,224,184,0.05) 0%, transparent 70%);
+    animation-duration: 16s;
+    animation-delay: -3s;
+  }
+  @keyframes drift {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(20px, 30px) scale(1.08); }
+  }
+
+  /* ── Grid noise texture ── */
+  .noise {
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── Content wrapper ── */
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    margin-bottom: 52px;
+    animation: fadeUp 0.7s ease both;
+  }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent4);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .eyebrow::before, .eyebrow::after {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--accent4);
+    opacity: 0.4;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 6vw, 52px);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .subtitle {
+    font-size: 15px;
+    color: var(--muted);
+    font-style: italic;
+    letter-spacing: 0.2px;
+  }
+
+  /* ── Chapter 8 badge ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(167,139,250,0.08);
+    border: 1px solid rgba(167,139,250,0.25);
+    border-radius: 100px;
+    padding: 6px 16px;
+    margin-bottom: 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--accent4);
+    text-transform: uppercase;
+  }
+  .badge-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent4);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  /* ── Nav cards ── */
+  .nav-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    width: 100%;
+    animation: fadeUp 0.7s 0.15s ease both;
+  }
+
+  .nav-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    cursor: pointer;
+    group: true;
+  }
+  .nav-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    border-radius: 16px;
+  }
+  .nav-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 24px 48px rgba(0,0,0,0.35);
+  }
+
+  /* Card 1 — Summary */
+  .card-summary { border-color: rgba(92,224,184,0.2); }
+  .card-summary::before { background: radial-gradient(ellipse at top left, rgba(92,224,184,0.06), transparent 70%); }
+  .card-summary:hover { border-color: rgba(92,224,184,0.5); }
+  .card-summary:hover::before { opacity: 1; }
+
+  /* Card 2 — Quiz */
+  .card-quiz { border-color: rgba(245,166,35,0.2); }
+  .card-quiz::before { background: radial-gradient(ellipse at top left, rgba(245,166,35,0.06), transparent 70%); }
+  .card-quiz:hover { border-color: rgba(245,166,35,0.5); }
+  .card-quiz:hover::before { opacity: 1; }
+
+  /* Card icon */
+  .card-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .icon-summary { background: rgba(92,224,184,0.1); border: 1px solid rgba(92,224,184,0.25); }
+  .icon-quiz    { background: rgba(245,166,35,0.1);  border: 1px solid rgba(245,166,35,0.25); }
+
+  /* Card tag */
+  .card-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .tag-summary { color: var(--accent3); }
+  .tag-quiz    { color: var(--accent); }
+
+  /* Card heading */
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
+    line-height: 1.25;
+  }
+
+  /* Card description */
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Card footer */
+  .card-footer {
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 1;
+    transition: gap 0.2s ease;
+  }
+  .nav-card:hover .card-footer { gap: 12px; }
+  .footer-summary { color: var(--accent3); }
+  .footer-quiz    { color: var(--accent); }
+
+  /* Arrow */
+  .arrow {
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.2s ease;
+  }
+  .nav-card:hover .arrow { transform: translateX(4px); }
+
+  /* Corner decoration */
+  .corner-deco {
+    position: absolute;
+    bottom: -20px; right: -20px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    opacity: 0.07;
+    transition: opacity 0.25s, transform 0.25s;
+    z-index: 0;
+  }
+  .nav-card:hover .corner-deco { opacity: 0.14; transform: scale(1.15); }
+  .deco-summary { background: var(--accent3); }
+  .deco-quiz    { background: var(--accent); }
+
+  /* ── Divider ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 44px 0 0;
+    width: 100%;
+    animation: fadeUp 0.7s 0.3s ease both;
+  }
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
+  .divider-text {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── Stats row ── */
+  .stats {
+    display: flex;
+    gap: 32px;
+    margin-top: 28px;
+    animation: fadeUp 0.7s 0.35s ease both;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .stat-val {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .sep { color: var(--border); font-size: 28px; line-height: 1; align-self: center; }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 520px) {
+    .nav-grid { grid-template-columns: 1fr; }
+    .stats { gap: 20px; }
+    .stat-val { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div class="noise"></div>
+
+<div class="wrapper">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="badge"><span class="badge-dot"></span> Chapter 8 · Statistics</div>
+    <h1>Hypothesis<br><em>Testing</em></h1>
+    <p class="subtitle">Your complete study companion — summary &amp; practice.</p>
+  </div>
+
+  <!-- Navigation Cards -->
+  <div class="nav-grid">
+
+    <!-- Card 1: Summary -->
+    <a class="nav-card card-summary" href="hypothesis_testing_summary.html">
+      <div class="corner-deco deco-summary"></div>
+      <div class="card-icon icon-summary">📋</div>
+      <div class="card-tag tag-summary">Study Material</div>
+      <div class="card-title">Exam Summary</div>
+      <div class="card-desc">All key definitions, formulas, error types, critical values, Cohen's d, and power — organized for quick revision.</div>
+      <div class="card-footer footer-summary">
+        Open Summary <span class="arrow">→</span>
+      </div>
+    </a>
+
+    <!-- Card 2: Quiz -->
+    <a class="nav-card card-quiz" href="index.html">
+      <div class="corner-deco deco-quiz"></div>
+      <div class="card-icon icon-quiz">🎯</div>
+      <div class="card-tag tag-quiz">Practice</div>
+      <div class="card-title">MCQ Quiz</div>
+      <div class="card-desc">Test your understanding with multiple-choice questions covering the full chapter — from z tests to power analysis.</div>
+      <div class="card-footer footer-quiz">
+        Start Quiz <span class="arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Footer stats -->
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-text">Chapter at a glance</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <span class="stat-val">4</span>
+      <span class="stat-label">Steps</span>
+    </div>
+    <div class="sep">·</div>
+    <div class="stat">
+      <span class="stat-val">3</span>
+      <span class="stat-label">Error Types</span>
+    </div>
+    <div class="sep">·</div>
+    <div class="stat">
+      <span class="stat-val">α .05</span>
+      <span class="stat-label">Significance</span>
+    </div>
+    <div class="sep">·</div>
+    <div class="stat">
+      <span class="stat-val">±1.96</span>
+      <span class="stat-label">Critical z</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
