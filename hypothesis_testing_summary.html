@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hypothesis Testing — Exam Summary</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=IBM+Plex+Mono:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e17;
+    --surface: #1a1928;
+    --surface2: #22203a;
+    --border: #2e2c4a;
+    --accent: #f5a623;
+    --accent2: #e05c5c;
+    --accent3: #5ce0b8;
+    --accent4: #a78bfa;
+    --text: #e8e6f0;
+    --text-muted: #8f8daa;
+    --formula-bg: #12101f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.75;
+    padding: 0 0 60px 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #1a1928 0%, #0f0e17 60%, #1a0f28 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245,166,35,0.07) 0%, transparent 70%);
+  }
+  .hero-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  .hero p {
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 14px;
+  }
+
+  /* NAV */
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 18px 40px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .nav a:hover { color: var(--accent); border-color: var(--accent); background: rgba(245,166,35,0.05); }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+  /* SECTION */
+  section { margin-top: 48px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(245,166,35,0.1);
+    border: 1px solid rgba(245,166,35,0.3);
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+  }
+  .section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  /* CARDS */
+  .cards { display: grid; gap: 16px; }
+  .cards-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .cards-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .cards-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent4); }
+  .card-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 36px;
+    font-weight: 600;
+    color: rgba(245,166,35,0.12);
+    position: absolute;
+    top: 10px; right: 16px;
+    line-height: 1;
+  }
+  .card h3 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .card p, .card li { color: var(--text-muted); font-size: 14px; }
+  .card ul { padding-left: 16px; }
+  .card li { margin-bottom: 4px; }
+
+  /* STEP FLOW */
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0; }
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 22px;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .step:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    font-size: 18px;
+    z-index: 2;
+    display: none;
+  }
+  .step:first-child { border-radius: 10px 0 0 10px; }
+  .step:last-child { border-radius: 0 10px 10px 0; }
+  .step:hover { background: var(--surface2); }
+  .step-n {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 28px;
+    font-weight: 600;
+    color: rgba(167,139,250,0.25);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .step h3 { font-size: 13px; font-weight: 600; color: var(--accent4); margin-bottom: 6px; letter-spacing: 0.5px; }
+  .step p { font-size: 13px; color: var(--text-muted); }
+
+  /* FORMULA BOX */
+  .formula-box {
+    background: var(--formula-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent3);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 12px 0;
+  }
+  .formula-box .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent3);
+    margin-bottom: 8px;
+  }
+  .formula {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 16px;
+    color: #fff;
+    letter-spacing: 0.5px;
+  }
+  .formula sub { font-size: 11px; color: var(--accent3); }
+  .formula-note { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+
+  /* ERROR TABLE */
+  .error-matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .error-matrix th {
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+  .error-matrix td {
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    text-align: center;
+    vertical-align: middle;
+  }
+  .correct-cell { background: rgba(92,224,184,0.08); color: var(--accent3); font-weight: 600; }
+  .error-cell-1 { background: rgba(224,92,92,0.08); color: var(--accent2); font-weight: 600; }
+  .error-cell-2 { background: rgba(245,166,35,0.08); color: var(--accent); font-weight: 600; }
+  .row-label { color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; font-size: 11px; background: var(--surface2); }
+
+  /* HIGHLIGHT PILL */
+  .pill {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 100px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .pill-green { background: rgba(92,224,184,0.12); color: var(--accent3); border: 1px solid rgba(92,224,184,0.3); }
+  .pill-red { background: rgba(224,92,92,0.12); color: var(--accent2); border: 1px solid rgba(224,92,92,0.3); }
+  .pill-yellow { background: rgba(245,166,35,0.12); color: var(--accent); border: 1px solid rgba(245,166,35,0.3); }
+  .pill-purple { background: rgba(167,139,250,0.12); color: var(--accent4); border: 1px solid rgba(167,139,250,0.3); }
+
+  /* CRITICAL VALUES TABLE */
+  .crit-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .crit-table th {
+    background: var(--surface2);
+    color: var(--accent4);
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .crit-table td {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    text-align: center;
+    color: var(--text);
+  }
+  .crit-table tr:hover td { background: var(--surface2); }
+
+  /* POWER TABLE */
+  .power-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .power-col { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+  .power-col h3 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .power-col.inc h3 { color: var(--accent3); }
+  .power-col.dec h3 { color: var(--accent2); }
+  .power-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .power-item:last-child { border-bottom: none; }
+  .power-item .sym {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    min-width: 60px;
+    color: var(--text);
+  }
+  .power-item .desc { color: var(--text-muted); }
+  .arrow-up { color: var(--accent3); font-size: 16px; }
+  .arrow-down { color: var(--accent2); font-size: 16px; }
+
+  /* KEY TERMS */
+  .terms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+  }
+  .term {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+  }
+  .term-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent4);
+    margin-bottom: 4px;
+  }
+  .term-def { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+  /* CALLOUT */
+  .callout {
+    background: rgba(245,166,35,0.05);
+    border: 1px solid rgba(245,166,35,0.2);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 12px 0;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .callout strong { color: var(--accent); }
+
+  /* COHEN'S D */
+  .cohen-scale {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 16px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .cohen-seg {
+    flex: 1;
+    padding: 14px 10px;
+    text-align: center;
+    font-size: 13px;
+  }
+  .cohen-seg .size { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+  .cohen-seg .range { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+  .seg-small { background: rgba(92,224,184,0.07); }
+  .seg-medium { background: rgba(245,166,35,0.07); }
+  .seg-large { background: rgba(224,92,92,0.07); }
+  .seg-small .size { color: var(--accent3); }
+  .seg-medium .size { color: var(--accent); }
+  .seg-large .size { color: var(--accent2); }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 60px;
+    padding: 20px 40px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  @media (max-width: 600px) {
+    .hero, .nav, .container { padding-left: 20px; padding-right: 20px; }
+    .steps { grid-template-columns: 1fr; }
+    .step:first-child { border-radius: 10px 10px 0 0; }
+    .step:last-child { border-radius: 0 0 10px 10px; }
+    .power-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Chapter 8 · Exam Quick Reference</div>
+  <h1>Introduction to<br>Hypothesis Testing</h1>
+  <p>Everything you need — the night before the exam.</p>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#steps">4 Steps</a>
+  <a href="#definitions">Key Terms</a>
+  <a href="#errors">Error Types</a>
+  <a href="#ztest">z Test</a>
+  <a href="#critical">Critical Values</a>
+  <a href="#tails">1 vs 2 Tails</a>
+  <a href="#cohens">Cohen's d</a>
+  <a href="#power">Power</a>
+  <a href="#apa">APA Format</a>
+</nav>
+
+<div class="container">
+
+  <!-- ============ SECTION 1: 4 STEPS ============ -->
+  <section id="steps">
+    <div class="section-header">
+      <span class="section-num">§1</span>
+      <h2>The Four Steps of Hypothesis Testing</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">01</div>
+        <h3>State the Hypotheses</h3>
+        <p>Write H₀ (null) and H₁ (alternative). H₀ is assumed true. H₁ states what you think is wrong about H₀.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">02</div>
+        <h3>Set the Criteria</h3>
+        <p>Choose the level of significance (usually α = .05). This sets the rejection region using critical values.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">03</div>
+        <h3>Compute Test Statistic</h3>
+        <p>Calculate z<sub>obt</sub> to find how many standard deviations the sample mean is from the null population mean.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">04</div>
+        <h3>Make a Decision</h3>
+        <p>Compare z<sub>obt</sub> to critical value. If p &lt; .05 → <strong>Reject H₀</strong>. If p &gt; .05 → <strong>Retain H₀</strong>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 2: DEFINITIONS ============ -->
+  <section id="definitions">
+    <div class="section-header">
+      <span class="section-num">§2</span>
+      <h2>Key Definitions</h2>
+    </div>
+    <div class="terms-grid">
+      <div class="term">
+        <div class="term-name">Null Hypothesis (H₀)</div>
+        <div class="term-def">A statement about a population parameter assumed to be true. The starting point — we test whether it should be rejected.</div>
+      </div>
+      <div class="term">
+        <div class="term-name">Alternative Hypothesis (H₁)</div>
+        <div class="term-def">Directly contradicts H₀. States the parameter is less than (&lt;), greater than (&gt;), or not equal (≠) to the null value.</div>
+      </div>
+      <div class="term">
+        <div class="term-name">Level of Significance (α)</div>
+        <div class="term-def">The criterion for deciding whether to reject H₀. Typically set at .05 in behavioral research.</div>
+      </div>
+      <div class="term">
+        <div class="term-name">Test Statistic (z<sub>obt</sub>)</div>
+        <div class="term-def">A formula that converts the sample mean into a z-score, telling how far it is from the population mean stated in H₀.</div>
+      </div>
+      <div class="term">
+        <div class="term-name">p value</div>
+        <div class="term-def">The probability of obtaining a sample outcome given H₀ is true. Always between 0 and 1, never negative.</div>
+      </div>
+      <div class="term">
+        <div class="term-name">Statistical Significance</div>
+        <div class="term-def">When H₀ is rejected (p &lt; .05), the result is significant. When retained (p &gt; .05), result is not significant.</div>
+      </div>
+      <div class="term">
+        <div class="term-name">Critical Value</div>
+        <div class="term-def">Cutoff value(s) marking the boundary of the rejection region. If z<sub>obt</sub> exceeds this, reject H₀.</div>
+      </div>
+      <div class="term">
+        <div class="term-name">Rejection Region</div>
+        <div class="term-def">The area beyond the critical value(s). Any z<sub>obt</sub> falling here → reject H₀.</div>
+      </div>
+      <div class="term">
+        <div class="term-name">Standard Error (σ<sub>M</sub>)</div>
+        <div class="term-def">σ<sub>M</sub> = σ / √n. The standard deviation of the sampling distribution. Gets smaller as n increases.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 3: ERROR TYPES ============ -->
+  <section id="errors">
+    <div class="section-header">
+      <span class="section-num">§3</span>
+      <h2>Types of Error in Decision Making</h2>
+    </div>
+    <div style="overflow-x:auto; margin-bottom:16px;">
+      <table class="error-matrix">
+        <tr>
+          <th style="border:1px solid var(--border); background:var(--bg);"></th>
+          <th>Decision: Retain H₀</th>
+          <th>Decision: Reject H₀</th>
+        </tr>
+        <tr>
+          <td class="row-label">Truth: H₀ is TRUE</td>
+          <td class="correct-cell">✓ CORRECT<br><small>1 − α</small></td>
+          <td class="error-cell-1">✗ TYPE I ERROR (α)<br><small>Rejecting a true null</small></td>
+        </tr>
+        <tr>
+          <td class="row-label">Truth: H₀ is FALSE</td>
+          <td class="error-cell-2">✗ TYPE II ERROR (β)<br><small>Retaining a false null</small></td>
+          <td class="correct-cell">✓ CORRECT — POWER<br><small>1 − β</small></td>
+        </tr>
+      </table>
+    </div>
+    <div class="cards cards-3">
+      <div class="card">
+        <h3>Type I Error (α)</h3>
+        <p>Rejecting a <em>true</em> H₀. Like convicting an innocent person. Researchers <strong>directly control</strong> this by setting α = .05.</p>
+      </div>
+      <div class="card">
+        <h3>Type II Error (β)</h3>
+        <p>Retaining a <em>false</em> H₀. Like letting a guilty person go free. Associated with decisions to <strong>retain</strong> H₀.</p>
+      </div>
+      <div class="card">
+        <h3>Type III Error</h3>
+        <p>Retaining H₀ because the rejection region was placed in the <strong>wrong tail</strong>. Only possible with <strong>one-tailed tests</strong>.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Memory tip:</strong> α is the "alarm you set" — you directly control it. β is what slips through when the alarm doesn't go off. Power = 1 − β = the probability you catch a real effect.
+    </div>
+  </section>
+
+  <!-- ============ SECTION 4: Z TEST ============ -->
+  <section id="ztest">
+    <div class="section-header">
+      <span class="section-num">§4</span>
+      <h2>One-Independent Sample z Test</h2>
+    </div>
+    <p style="color:var(--text-muted); margin-bottom:16px;">Used when testing a population mean with a <strong style="color:var(--text);">known variance (σ²)</strong>.</p>
+
+    <div class="formula-box">
+      <div class="label">z Statistic Formula</div>
+      <div class="formula">z<sub>obt</sub> = (M − μ) / σ<sub>M</sub> &nbsp;&nbsp; where &nbsp;&nbsp; σ<sub>M</sub> = σ / √n</div>
+      <div class="formula-note">M = sample mean &nbsp;|&nbsp; μ = population mean (from H₀) &nbsp;|&nbsp; σ = population SD &nbsp;|&nbsp; n = sample size</div>
+    </div>
+
+    <div class="callout" style="margin-top:16px;">
+      <strong>Worked Example (GRE scores):</strong> μ = 558, σ = 139, n = 100, M = 585<br>
+      σ<sub>M</sub> = 139 / √100 = 13.9 &nbsp;→&nbsp; z<sub>obt</sub> = (585 − 558) / 13.9 = <strong>1.94</strong>
+    </div>
+
+    <div class="cards cards-2" style="margin-top:16px;">
+      <div class="card">
+        <h3>Finding p value</h3>
+        <ul>
+          <li>Look up |z<sub>obt</sub>| in the unit normal table (column A)</li>
+          <li>Get the tail probability (column C) = p</li>
+          <li><strong>One-tailed:</strong> p value = p (1×)</li>
+          <li><strong>Two-tailed:</strong> p value = 2p (2×)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Making the Decision</h3>
+        <ul>
+          <li>If <span class="pill pill-green">p &lt; .05</span> → Reject H₀ ✓</li>
+          <li>If <span class="pill pill-red">p &gt; .05</span> → Retain H₀</li>
+          <li>If |z<sub>obt</sub>| exceeds critical value → Reject H₀</li>
+          <li>If |z<sub>obt</sub>| is within critical values → Retain H₀</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 5: CRITICAL VALUES ============ -->
+  <section id="critical">
+    <div class="section-header">
+      <span class="section-num">§5</span>
+      <h2>Critical Values — Quick Reference</h2>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="crit-table">
+        <tr>
+          <th>α Level</th>
+          <th>One-Tailed (upper or lower)</th>
+          <th>Two-Tailed (±)</th>
+        </tr>
+        <tr>
+          <td><span class="pill pill-yellow">α = .05</span></td>
+          <td>+1.645 or −1.645</td>
+          <td>±1.96</td>
+        </tr>
+        <tr>
+          <td><span class="pill pill-purple">α = .01</span></td>
+          <td>+2.33 or −2.33</td>
+          <td>±2.58</td>
+        </tr>
+        <tr>
+          <td><span class="pill pill-red">α = .001</span></td>
+          <td>+3.09 or −3.09</td>
+          <td>±3.30</td>
+        </tr>
+      </table>
+    </div>
+    <div class="callout" style="margin-top:14px;">
+      <strong>For two-tailed tests:</strong> Split α in half — put α/2 in each tail. &nbsp;|&nbsp;
+      <strong>For one-tailed tests:</strong> Put all α in one tail (upper or lower depending on H₁).
+    </div>
+  </section>
+
+  <!-- ============ SECTION 6: ONE vs TWO TAILS ============ -->
+  <section id="tails">
+    <div class="section-header">
+      <span class="section-num">§6</span>
+      <h2>One-Tailed vs. Two-Tailed Tests</h2>
+    </div>
+    <div class="cards cards-3">
+      <div class="card">
+        <h3>Two-Tailed (≠)</h3>
+        <p>H₁: μ ≠ value<br>Rejection region in <em>both</em> tails. More conservative. Eliminates Type III error. <strong>Most common</strong> in behavioral research.</p>
+      </div>
+      <div class="card">
+        <h3>Upper-Tail (>)</h3>
+        <p>H₁: μ &gt; value<br>Rejection region in the <em>upper</em> tail only. Use when outcome can only plausibly be above the null.</p>
+      </div>
+      <div class="card">
+        <h3>Lower-Tail (&lt;)</h3>
+        <p>H₁: μ &lt; value<br>Rejection region in the <em>lower</em> tail only. Use when outcome can only plausibly be below the null.</p>
+      </div>
+    </div>
+    <div class="cards cards-2" style="margin-top:16px;">
+      <div class="card">
+        <h3>One-Tailed Advantages</h3>
+        <ul>
+          <li>Greater <strong>power</strong> (easier to reject H₀)</li>
+          <li>Full α placed in one direction</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>One-Tailed Disadvantages</h3>
+        <ul>
+          <li>Risk of Type III error</li>
+          <li>Must justify directional prediction</li>
+          <li>Harder to publish if wrong direction</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Key insight:</strong> The same data can give different decisions depending on tail direction. Example: z<sub>obt</sub> = 1.94 → <em>Retain H₀</em> (two-tailed, α=.05) but <em>Reject H₀</em> (upper-tail, α=.05). This is why Type III errors matter.
+    </div>
+  </section>
+
+  <!-- ============ SECTION 7: COHEN'S D ============ -->
+  <section id="cohens">
+    <div class="section-header">
+      <span class="section-num">§7</span>
+      <h2>Effect Size — Cohen's d</h2>
+    </div>
+    <p style="color:var(--text-muted); margin-bottom:14px;">Hypothesis testing tells you <em>whether</em> an effect exists. Cohen's d tells you <em>how big</em> it is.</p>
+
+    <div class="formula-box">
+      <div class="label">Cohen's d Formula</div>
+      <div class="formula">d = (M − μ) / σ</div>
+      <div class="formula-note">Uses population SD (σ) in denominator — NOT standard error (σ<sub>M</sub>). This is the key difference from the z statistic.</div>
+    </div>
+
+    <div class="cohen-scale">
+      <div class="cohen-seg seg-small">
+        <div class="size">Small</div>
+        <div class="range">d &lt; 0.2</div>
+      </div>
+      <div class="cohen-seg seg-medium">
+        <div class="size">Medium</div>
+        <div class="range">0.2 ≤ d &lt; 0.8</div>
+      </div>
+      <div class="cohen-seg seg-large">
+        <div class="size">Large</div>
+        <div class="range">d ≥ 0.8</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>GRE Example:</strong> d = (585 − 558) / 139 = 27/139 ≈ <strong>0.19</strong> → Small effect size.<br>
+      This means scores shifted 0.19 standard deviations above the population mean.<br><br>
+      <strong>Remember:</strong> Only report effect size when the result is significant (H₀ was rejected). Computing it for a retained H₀ is illogical — you'd be measuring the size of an effect you concluded doesn't exist.
+    </div>
+
+    <div class="cards cards-2" style="margin-top:16px;">
+      <div class="card">
+        <h3>z Statistic vs. Cohen's d</h3>
+        <ul>
+          <li>z uses σ<sub>M</sub> (standard error) — affected by n</li>
+          <li>d uses σ (population SD) — not affected by n</li>
+          <li>z: "Is the effect real?" (p value)</li>
+          <li>d: "How big is the effect?"</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>What Affects Cohen's d?</h3>
+        <ul>
+          <li>↑ Mean difference (M−μ) → ↑ d</li>
+          <li>↑ Population SD (σ) → ↓ d</li>
+          <li>Sample size (n) has <strong>no effect</strong> on d</li>
+          <li>Larger d = more practically important effect</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 8: POWER ============ -->
+  <section id="power">
+    <div class="section-header">
+      <span class="section-num">§8</span>
+      <h2>Statistical Power</h2>
+    </div>
+    <p style="color:var(--text-muted); margin-bottom:16px;"><strong style="color:var(--text);">Power = 1 − β</strong> = probability of correctly rejecting a false H₀. Researchers aim for power ≥ .80.</p>
+
+    <div class="power-grid">
+      <div class="power-col inc">
+        <h3>↑ Increase to Boost Power</h3>
+        <div class="power-item"><span class="sym">d (effect)</span><span class="arrow-up">↑</span><span class="desc">Bigger true effect = easier to detect</span></div>
+        <div class="power-item"><span class="sym">n (sample)</span><span class="arrow-up">↑</span><span class="desc">Larger n → smaller σ<sub>M</sub> → bigger z</span></div>
+        <div class="power-item"><span class="sym">α (alpha)</span><span class="arrow-up">↑</span><span class="desc">Larger rejection region (use with caution)</span></div>
+      </div>
+      <div class="power-col dec">
+        <h3>↓ Decrease to Boost Power</h3>
+        <div class="power-item"><span class="sym">β (beta)</span><span class="arrow-down">↓</span><span class="desc">Directly reduces Type II error rate</span></div>
+        <div class="power-item"><span class="sym">σ (pop SD)</span><span class="arrow-down">↓</span><span class="desc">Less variability → cleaner signal</span></div>
+        <div class="power-item"><span class="sym">σ<sub>M</sub> (SEM)</span><span class="arrow-down">↓</span><span class="desc">Tighter sampling distribution</span></div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:16px;">
+      <strong>Effect size & power example:</strong> Two classes, same 2-point effect (M=40, μ=38), n=30:<br>
+      Class 1 (σ=10) → d=0.20 → Power ≈ <strong>29%</strong> &nbsp;|&nbsp;
+      Class 2 (σ=2) → d=1.00 → Power ≈ <strong>99.99%</strong><br>
+      Larger effect size = dramatically more power.
+    </div>
+
+    <div class="callout" style="border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.05);">
+      <strong style="color:var(--accent4);">Sample size & power example:</strong> Class 1 (σ=10, μ=38, M=40):<br>
+      n=30 → z = 1.10 → Retain H₀ (fails to reach critical value 1.645)<br>
+      n=100 → z = 2.00 → Reject H₀ (exceeds critical value 1.645)<br>
+      Increasing n alone changed the decision!
+    </div>
+  </section>
+
+  <!-- ============ SECTION 9: APA FORMAT ============ -->
+  <section id="apa">
+    <div class="section-header">
+      <span class="section-num">§9</span>
+      <h2>APA Format — Reporting Results</h2>
+    </div>
+    <div class="card" style="margin-bottom:16px;">
+      <h3>What to Report</h3>
+      <p style="margin-bottom:8px;">Always include: <span class="pill pill-green">test statistic</span> &nbsp;<span class="pill pill-yellow">p value</span> &nbsp;<span class="pill pill-purple">effect size</span> &nbsp;+ a table or figure when possible.</p>
+      <div style="margin-top:12px; padding:14px; background:var(--formula-bg); border-radius:6px; font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--text);">
+        "Test scores for students in the elite school were significantly higher than the standard performance of test takers, z = 1.94, p &lt; .03 (d = 0.19)."
+      </div>
+    </div>
+
+    <div class="cards cards-2">
+      <div class="card">
+        <h3>Language Rules</h3>
+        <ul>
+          <li>Say <strong>"significant"</strong> not "reject the null"</li>
+          <li>Say <strong>"not significant"</strong> not "retain the null"</li>
+          <li>Report exact p value when possible</li>
+          <li>Can also state p &lt; closest round value (e.g., p &lt; .03 for p = .0262)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Effect Size in Reports</h3>
+        <ul>
+          <li>Effect size is <strong>almost always</strong> reported with the test statistic</li>
+          <li>Significance testing alone cannot stand in research reports</li>
+          <li>Effect size can (e.g., in a figure caption)</li>
+          <li>Always include error bars (SEM) in figures</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="footer">
+  Chapter 8 · Introduction to Hypothesis Testing &nbsp;·&nbsp; Good luck on your exam!
+</div>
+
+</body>
+</html>

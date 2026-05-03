@@ -1,452 +1,1277 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hypothesis Testing — Study Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=IBM+Plex+Mono:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hypothesis Testing — MCQ Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
 <style>
   :root {
-    --bg:       #0f0e17;
-    --surface:  #1a1928;
-    --surface2: #22203a;
-    --border:   #2e2c4a;
-    --accent:   #f5a623;
-    --accent2:  #e05c5c;
-    --accent3:  #5ce0b8;
-    --accent4:  #a78bfa;
-    --text:     #e8e6f0;
-    --muted:    #8f8daa;
+    --ink:       #0f0f0f;
+    --paper:     #faf8f4;
+    --cream:     #f2ede4;
+    --rule:      #d9d2c5;
+    --accent:    #b5451b;
+    --gold:      #c9972a;
+    --sage:      #4a7c59;
+    --blue-ink:  #1a3a5c;
+    --easy:      #4a7c59;
+    --medium:    #c9972a;
+    --hard:      #b5451b;
+    --correct:   #4a7c59;
+    --wrong:     #b5451b;
+    --shadow:    rgba(15,15,15,0.10);
+    --r: 4px;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: var(--bg);
-    color: var(--text);
+    background: var(--paper);
+    color: var(--ink);
     font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.7;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 24px;
+  }
+
+  /* ── HEADER ─────────────────────────────── */
+  .masthead {
+    background: var(--blue-ink);
+    color: #fff;
+    padding: 56px 40px 44px;
     position: relative;
     overflow: hidden;
   }
-
-  /* ── Atmospheric background ── */
-  body::before {
+  .masthead::before {
     content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 60% 50% at 20% 20%, rgba(167,139,250,0.06) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(245,166,35,0.05) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 60% at 70% 15%, rgba(92,224,184,0.04) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent, transparent 18px,
+      rgba(255,255,255,0.025) 18px, rgba(255,255,255,0.025) 19px
+    );
   }
-
-  /* Floating orbs */
-  .orb {
-    position: fixed;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 0;
-    animation: drift 14s ease-in-out infinite alternate;
-  }
-  .orb-1 {
-    width: 320px; height: 320px;
-    top: -80px; left: -80px;
-    background: radial-gradient(circle, rgba(167,139,250,0.07) 0%, transparent 70%);
-    animation-duration: 18s;
-  }
-  .orb-2 {
-    width: 240px; height: 240px;
-    bottom: -60px; right: -60px;
-    background: radial-gradient(circle, rgba(245,166,35,0.06) 0%, transparent 70%);
-    animation-duration: 22s;
-    animation-delay: -6s;
-  }
-  .orb-3 {
-    width: 180px; height: 180px;
-    top: 50%; right: 10%;
-    background: radial-gradient(circle, rgba(92,224,184,0.05) 0%, transparent 70%);
-    animation-duration: 16s;
-    animation-delay: -3s;
-  }
-  @keyframes drift {
-    from { transform: translate(0, 0) scale(1); }
-    to   { transform: translate(20px, 30px) scale(1.08); }
-  }
-
-  /* ── Grid noise texture ── */
-  .noise {
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.4;
-  }
-
-  /* ── Content wrapper ── */
-  .wrapper {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 720px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0;
-  }
-
-  /* ── Header ── */
-  .header {
-    text-align: center;
-    margin-bottom: 52px;
-    animation: fadeUp 0.7s ease both;
-  }
-  .eyebrow {
-    font-family: 'IBM Plex Mono', monospace;
+  .masthead-inner { max-width: 900px; margin: 0 auto; position: relative; }
+  .masthead-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
-    letter-spacing: 4px;
+    letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--accent4);
+    color: rgba(255,255,255,0.55);
     margin-bottom: 14px;
+  }
+  .masthead h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    margin-bottom: 10px;
+  }
+  .masthead h1 span { color: var(--gold); }
+  .masthead-subtitle {
+    font-size: 15px;
+    color: rgba(255,255,255,0.70);
+    font-style: italic;
+    margin-bottom: 28px;
+  }
+  .badges {
+    display: flex; flex-wrap: wrap; gap: 10px;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .badge-easy   { background: rgba(74,124,89,0.25);  color: #7dcf9a; border: 1px solid rgba(74,124,89,0.4); }
+  .badge-medium { background: rgba(201,151,42,0.25); color: #f0c060; border: 1px solid rgba(201,151,42,0.4); }
+  .badge-hard   { background: rgba(181,69,27,0.25);  color: #f0896a; border: 1px solid rgba(181,69,27,0.4); }
+  .badge-total  { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.2); }
+
+  /* ── MAIN WRAPPER ─────────────────────── */
+  .wrapper { max-width: 900px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* ── SUMMARY SECTION ─────────────────── */
+  .summary-section {
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    border-top: 4px solid var(--blue-ink);
+    margin: 40px 0 48px;
+    padding: 36px 40px;
+    border-radius: var(--r);
+    box-shadow: 0 2px 12px var(--shadow);
+  }
+  .summary-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rule);
+    color: var(--blue-ink);
+  }
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 20px;
+  }
+  .topic-card {
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: var(--r);
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .topic-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 3px; height: 100%;
+    background: var(--card-accent, var(--blue-ink));
+  }
+  .topic-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--card-accent, var(--blue-ink));
+    display: flex; align-items: center; gap: 8px;
+  }
+  .topic-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: var(--card-accent-bg, rgba(26,58,92,0.1));
+    color: var(--card-accent, var(--blue-ink));
+  }
+  .topic-card p { font-size: 13.5px; color: #444; line-height: 1.6; }
+  .topic-card .formula {
+    margin-top: 10px;
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 8px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--blue-ink);
+  }
+
+  /* ── QUIZ META BAR ─────────────────────── */
+  .quiz-meta-bar {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
-  .eyebrow::before, .eyebrow::after {
-    content: '';
-    display: block;
-    width: 32px;
-    height: 1px;
-    background: var(--accent4);
-    opacity: 0.4;
-  }
-  h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(32px, 6vw, 52px);
-    font-weight: 700;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 28px;
+    padding: 14px 20px;
+    background: var(--blue-ink);
     color: #fff;
-    line-height: 1.15;
+    border-radius: var(--r);
+  }
+  .quiz-meta-bar span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: rgba(255,255,255,0.75);
+  }
+  .quiz-meta-bar strong { color: #fff; }
+  #score-display {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--gold);
+    font-weight: 600;
+  }
+  .btn-check-all, .btn-reset {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    border: none;
+    border-radius: var(--r);
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .btn-check-all {
+    background: var(--gold);
+    color: var(--blue-ink);
+  }
+  .btn-check-all:hover { background: #e0ab30; }
+  .btn-reset {
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .btn-reset:hover { background: rgba(255,255,255,0.2); }
+
+  /* ── SECTION DIVIDERS ─────────────────── */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 36px 0 20px;
+  }
+  .section-divider .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .pill-easy   { background: #e8f5ed; color: var(--easy);   border: 1.5px solid var(--easy); }
+  .pill-medium { background: #fdf3e0; color: var(--medium); border: 1.5px solid var(--medium); }
+  .pill-hard   { background: #fdeee8; color: var(--hard);   border: 1.5px solid var(--hard); }
+  .section-divider hr { flex: 1; border: none; border-top: 1px solid var(--rule); }
+
+  /* ── QUESTION CARDS ─────────────────────── */
+  .q-card {
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: var(--r);
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 6px var(--shadow);
+    transition: box-shadow 0.2s;
+  }
+  .q-card:hover { box-shadow: 0 4px 16px var(--shadow); }
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
     margin-bottom: 16px;
   }
-  h1 em {
-    font-style: italic;
-    color: var(--accent);
-  }
-  .subtitle {
-    font-size: 15px;
-    color: var(--muted);
-    font-style: italic;
-    letter-spacing: 0.2px;
-  }
-
-  /* ── Chapter 8 badge ── */
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(167,139,250,0.08);
-    border: 1px solid rgba(167,139,250,0.25);
-    border-radius: 100px;
-    padding: 6px 16px;
-    margin-bottom: 20px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    color: var(--accent4);
-    text-transform: uppercase;
-  }
-  .badge-dot {
-    width: 6px; height: 6px;
+  .q-num {
+    flex-shrink: 0;
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
     border-radius: 50%;
-    background: var(--accent4);
-    animation: pulse 2s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50%       { opacity: 0.4; transform: scale(0.8); }
-  }
-
-  /* ── Nav cards ── */
-  .nav-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    width: 100%;
-    animation: fadeUp 0.7s 0.15s ease both;
-  }
-
-  .nav-card {
-    display: flex;
-    flex-direction: column;
-    text-decoration: none;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 32px 28px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-    cursor: pointer;
-    group: true;
-  }
-  .nav-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 0.25s ease;
-    border-radius: 16px;
-  }
-  .nav-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 24px 48px rgba(0,0,0,0.35);
-  }
-
-  /* Card 1 — Summary */
-  .card-summary { border-color: rgba(92,224,184,0.2); }
-  .card-summary::before { background: radial-gradient(ellipse at top left, rgba(92,224,184,0.06), transparent 70%); }
-  .card-summary:hover { border-color: rgba(92,224,184,0.5); }
-  .card-summary:hover::before { opacity: 1; }
-
-  /* Card 2 — Quiz */
-  .card-quiz { border-color: rgba(245,166,35,0.2); }
-  .card-quiz::before { background: radial-gradient(ellipse at top left, rgba(245,166,35,0.06), transparent 70%); }
-  .card-quiz:hover { border-color: rgba(245,166,35,0.5); }
-  .card-quiz:hover::before { opacity: 1; }
-
-  /* Card icon */
-  .card-icon {
-    width: 48px; height: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    margin-bottom: 20px;
-    position: relative;
-    z-index: 1;
-  }
-  .icon-summary { background: rgba(92,224,184,0.1); border: 1px solid rgba(92,224,184,0.25); }
-  .icon-quiz    { background: rgba(245,166,35,0.1);  border: 1px solid rgba(245,166,35,0.25); }
-
-  /* Card tag */
-  .card-tag {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    position: relative;
-    z-index: 1;
-  }
-  .tag-summary { color: var(--accent3); }
-  .tag-quiz    { color: var(--accent); }
-
-  /* Card heading */
-  .card-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 10px;
-    position: relative;
-    z-index: 1;
-    line-height: 1.25;
-  }
-
-  /* Card description */
-  .card-desc {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.6;
-    flex: 1;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* Card footer */
-  .card-footer {
-    margin-top: 24px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.5px;
-    position: relative;
-    z-index: 1;
-    transition: gap 0.2s ease;
+    color: #fff;
+    margin-top: 1px;
   }
-  .nav-card:hover .card-footer { gap: 12px; }
-  .footer-summary { color: var(--accent3); }
-  .footer-quiz    { color: var(--accent); }
-
-  /* Arrow */
-  .arrow {
-    display: inline-flex;
-    align-items: center;
-    transition: transform 0.2s ease;
+  .q-num-easy   { background: var(--easy); }
+  .q-num-medium { background: var(--medium); }
+  .q-num-hard   { background: var(--hard); }
+  .q-text {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.65;
+    color: var(--ink);
   }
-  .nav-card:hover .arrow { transform: translateX(4px); }
-
-  /* Corner decoration */
-  .corner-deco {
-    position: absolute;
-    bottom: -20px; right: -20px;
-    width: 100px; height: 100px;
-    border-radius: 50%;
-    opacity: 0.07;
-    transition: opacity 0.25s, transform 0.25s;
-    z-index: 0;
-  }
-  .nav-card:hover .corner-deco { opacity: 0.14; transform: scale(1.15); }
-  .deco-summary { background: var(--accent3); }
-  .deco-quiz    { background: var(--accent); }
-
-  /* ── Divider ── */
-  .divider {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin: 44px 0 0;
-    width: 100%;
-    animation: fadeUp 0.7s 0.3s ease both;
-  }
-  .divider-line { flex: 1; height: 1px; background: var(--border); }
-  .divider-text {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 2px;
+  .q-topic {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--muted);
+    padding: 3px 9px;
+    border-radius: 10px;
+    background: var(--cream);
+    color: #777;
+    border: 1px solid var(--rule);
+    white-space: nowrap;
   }
 
-  /* ── Stats row ── */
-  .stats {
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option-label {
     display: flex;
-    gap: 32px;
-    margin-top: 28px;
-    animation: fadeUp 0.7s 0.35s ease both;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border: 1.5px solid var(--rule);
+    border-radius: var(--r);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    font-size: 14.5px;
+    line-height: 1.5;
   }
-  .stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
-  .stat-val {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 22px;
+  .option-label:hover { border-color: #aaa; background: var(--cream); }
+  .option-label input[type="radio"] { display: none; }
+  .option-key {
+    flex-shrink: 0;
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
     font-weight: 600;
+    border: 1.5px solid var(--rule);
+    background: var(--cream);
+    color: #666;
+    transition: all 0.15s;
+    margin-top: 1px;
+  }
+
+  /* checked state */
+  .option-label:has(input:checked) {
+    border-color: var(--blue-ink);
+    background: rgba(26,58,92,0.04);
+  }
+  .option-label:has(input:checked) .option-key {
+    background: var(--blue-ink);
+    border-color: var(--blue-ink);
     color: #fff;
   }
-  .stat-label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .sep { color: var(--border); font-size: 28px; line-height: 1; align-self: center; }
 
-  /* ── Animations ── */
+  /* correct / wrong states */
+  .option-label.correct {
+    border-color: var(--correct) !important;
+    background: rgba(74,124,89,0.08) !important;
+  }
+  .option-label.correct .option-key {
+    background: var(--correct) !important;
+    border-color: var(--correct) !important;
+    color: #fff !important;
+  }
+  .option-label.wrong {
+    border-color: var(--wrong) !important;
+    background: rgba(181,69,27,0.07) !important;
+  }
+  .option-label.wrong .option-key {
+    background: var(--wrong) !important;
+    border-color: var(--wrong) !important;
+    color: #fff !important;
+  }
+
+  /* feedback */
+  .q-feedback {
+    display: none;
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: var(--r);
+    font-size: 13.5px;
+    font-style: italic;
+    line-height: 1.55;
+    border-left: 3px solid;
+  }
+  .q-feedback.show { display: block; }
+  .q-feedback.fb-correct { background: rgba(74,124,89,0.08); border-color: var(--correct); color: #2d6040; }
+  .q-feedback.fb-wrong   { background: rgba(181,69,27,0.08); border-color: var(--wrong);   color: #8a2f0f; }
+
+  /* ── ANSWER KEY ─────────────────────────── */
+  .answer-key-section {
+    margin-top: 56px;
+    border: 1px solid var(--rule);
+    border-top: 4px solid var(--accent);
+    border-radius: var(--r);
+    overflow: hidden;
+    box-shadow: 0 2px 12px var(--shadow);
+  }
+  .ak-header {
+    background: var(--accent);
+    color: #fff;
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .ak-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  .ak-header span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    opacity: 0.8;
+  }
+  .ak-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+  }
+  .ak-cell {
+    background: #fff;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .ak-cell:hover { background: var(--cream); }
+  .ak-qn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #999;
+    width: 20px;
+    flex-shrink: 0;
+  }
+  .ak-ans {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .ak-easy   .ak-ans { color: var(--easy); }
+  .ak-medium .ak-ans { color: var(--medium); }
+  .ak-hard   .ak-ans { color: var(--hard); }
+  .ak-topic {
+    font-size: 11px;
+    color: #aaa;
+    font-style: italic;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* ── SCORE PANEL ──────────────────────── */
+  .score-panel {
+    display: none;
+    margin-top: 28px;
+    padding: 28px 32px;
+    background: var(--blue-ink);
+    color: #fff;
+    border-radius: var(--r);
+    text-align: center;
+    animation: fadeUp 0.4s ease;
+  }
+  .score-panel.show { display: block; }
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
+    from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
   }
+  .score-big {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .score-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-top: 4px;
+  }
+  .score-msg {
+    margin-top: 14px;
+    font-size: 15px;
+    color: rgba(255,255,255,0.85);
+    font-style: italic;
+  }
+  .score-breakdown {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+  .sb-item {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: rgba(255,255,255,0.65);
+  }
+  .sb-item strong { color: #fff; }
 
-  /* ── Responsive ── */
-  @media (max-width: 520px) {
-    .nav-grid { grid-template-columns: 1fr; }
-    .stats { gap: 20px; }
-    .stat-val { font-size: 18px; }
+  /* ── FOOTER ─────────────────────────── */
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 12.5px;
+    color: #aaa;
+    font-style: italic;
+    border-top: 1px solid var(--rule);
+    margin-top: 40px;
+  }
+
+  @media (max-width: 600px) {
+    .masthead { padding: 36px 20px 28px; }
+    .summary-section { padding: 24px 20px; }
+    .q-card { padding: 18px 16px; }
+    .topic-grid { grid-template-columns: 1fr; }
+    .q-topic { display: none; }
   }
 </style>
 </head>
 <body>
 
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
-<div class="noise"></div>
+<!-- ══ MASTHEAD ══════════════════════════════════════════════════════ -->
+<div class="masthead">
+  <div class="masthead-inner">
+    <div class="masthead-eyebrow">Statistical Inference · Inferential Statistics</div>
+    <h1>Hypothesis <span>Testing</span></h1>
+    <div class="masthead-subtitle">A comprehensive quiz covering t-test, z-test, ANOVA &amp; chi-square test</div>
+    <div class="badges">
+      <span class="badge badge-easy">● Easy — Q1–10</span>
+      <span class="badge badge-medium">● Medium — Q11–20</span>
+      <span class="badge badge-hard">● Hard — Q21–30</span>
+      <span class="badge badge-total">30 Questions · 30 Marks</span>
+    </div>
+  </div>
+</div>
 
 <div class="wrapper">
 
-  <!-- Header -->
-  <div class="header">
-    <div class="badge"><span class="badge-dot"></span> Chapter 8 · Statistics</div>
-    <h1>Hypothesis<br><em>Testing</em></h1>
-    <p class="subtitle">Your complete study companion — summary &amp; practice.</p>
-  </div>
+  <!-- ══ SUMMARY ════════════════════════════════════════════════════ -->
+  <div class="summary-section">
+    <h2>📖 Quick Topic Summary</h2>
+    <div class="topic-grid">
 
-  <!-- Navigation Cards -->
-  <div class="nav-grid">
-
-    <!-- Card 1: Summary -->
-    <a class="nav-card card-summary" href="hypothesis_testing_summary.html">
-      <div class="corner-deco deco-summary"></div>
-      <div class="card-icon icon-summary">📋</div>
-      <div class="card-tag tag-summary">Study Material</div>
-      <div class="card-title">Exam Summary</div>
-      <div class="card-desc">All key definitions, formulas, error types, critical values, Cohen's d, and power — organized for quick revision.</div>
-      <div class="card-footer footer-summary">
-        Open Summary <span class="arrow">→</span>
+      <div class="topic-card" style="--card-accent:#1a3a5c;--card-accent-bg:rgba(26,58,92,0.08)">
+        <h3><span class="topic-tag">Z-Test</span></h3>
+        <p>Used to test whether a sample mean differs from a population mean when the <strong>population standard deviation (σ) is known</strong> and the sample size is large (n ≥ 30). Assumes data is normally distributed.</p>
+        <div class="formula">z = (x̄ − μ₀) / (σ / √n)</div>
+        <div class="formula" style="margin-top:6px">Two-prop: z = (p̂₁ − p̂₂) / √[p̂(1−p̂)(1/n₁+1/n₂)]</div>
       </div>
-    </a>
 
-    <!-- Card 2: Quiz -->
-    <a class="nav-card card-quiz" href="index.html">
-      <div class="corner-deco deco-quiz"></div>
-      <div class="card-icon icon-quiz">🎯</div>
-      <div class="card-tag tag-quiz">Practice</div>
-      <div class="card-title">MCQ Quiz</div>
-      <div class="card-desc">Test your understanding with multiple-choice questions covering the full chapter — from z tests to power analysis.</div>
-      <div class="card-footer footer-quiz">
-        Start Quiz <span class="arrow">→</span>
+      <div class="topic-card" style="--card-accent:#4a7c59;--card-accent-bg:rgba(74,124,89,0.08)">
+        <h3><span class="topic-tag">T-Test</span></h3>
+        <p>Used when <strong>σ is unknown</strong> and/or the sample is small (n &lt; 30). Three forms: <em>one-sample</em> (compare to μ), <em>independent two-sample</em> (compare two groups), and <em>paired</em> (compare matched pairs). Uses t-distribution with df = n−1.</p>
+        <div class="formula">t = (x̄ − μ₀) / (s / √n)   [one-sample]</div>
       </div>
-    </a>
 
+      <div class="topic-card" style="--card-accent:#c9972a;--card-accent-bg:rgba(201,151,42,0.08)">
+        <h3><span class="topic-tag">ANOVA</span></h3>
+        <p><strong>Analysis of Variance</strong> tests equality of means across <strong>three or more groups</strong> simultaneously. Uses the F-statistic (ratio of between-group to within-group variance). Assumes normality, equal variances (Levene's), and independence.</p>
+        <div class="formula">F = MS_between / MS_within = (SS_B/df_B) / (SS_W/df_W)</div>
+      </div>
+
+      <div class="topic-card" style="--card-accent:#b5451b;--card-accent-bg:rgba(181,69,27,0.08)">
+        <h3><span class="topic-tag">Chi-Square (χ²)</span></h3>
+        <p>Non-parametric test for <strong>categorical data</strong>. Two uses: <em>Goodness-of-Fit</em> (does observed distribution match expected?) and <em>Test of Independence</em> (are two categorical variables related?). df = (r−1)(c−1) for contingency tables.</p>
+        <div class="formula">χ² = Σ [ (O − E)² / E ]</div>
+      </div>
+
+      <div class="topic-card" style="--card-accent:#555;--card-accent-bg:rgba(85,85,85,0.08)">
+        <h3><span class="topic-tag">Key Concepts</span></h3>
+        <p><strong>Null Hypothesis (H₀)</strong>: No effect/difference. <strong>p-value</strong>: Probability of observing results at least as extreme, assuming H₀ is true. Reject H₀ when p &lt; α. <strong>Type I error (α)</strong>: Rejecting a true H₀. <strong>Type II error (β)</strong>: Failing to reject a false H₀.</p>
+        <div class="formula">Power = 1 − β  |  Common α = 0.05</div>
+      </div>
+
+      <div class="topic-card" style="--card-accent:#5a2d82;--card-accent-bg:rgba(90,45,130,0.08)">
+        <h3><span class="topic-tag">Test Selection Guide</span></h3>
+        <p>
+          <strong>σ known, large n</strong> → Z-test<br>
+          <strong>σ unknown / small n</strong> → T-test<br>
+          <strong>3+ group means</strong> → ANOVA<br>
+          <strong>Categorical frequencies</strong> → Chi-Square<br>
+          <strong>Non-normal / ordinal</strong> → Non-parametric alternatives
+        </p>
+      </div>
+
+    </div>
   </div>
 
-  <!-- Footer stats -->
-  <div class="divider">
-    <div class="divider-line"></div>
-    <div class="divider-text">Chapter at a glance</div>
-    <div class="divider-line"></div>
-  </div>
-
-  <div class="stats">
-    <div class="stat">
-      <span class="stat-val">4</span>
-      <span class="stat-label">Steps</span>
+  <!-- ══ QUIZ META BAR ══════════════════════════════════════════════ -->
+  <div class="quiz-meta-bar">
+    <div>
+      <span>Select an answer to check immediately · </span>
+      <strong>All 30 questions · 1 mark each</strong>
     </div>
-    <div class="sep">·</div>
-    <div class="stat">
-      <span class="stat-val">3</span>
-      <span class="stat-label">Error Types</span>
-    </div>
-    <div class="sep">·</div>
-    <div class="stat">
-      <span class="stat-val">α .05</span>
-      <span class="stat-label">Significance</span>
-    </div>
-    <div class="sep">·</div>
-    <div class="stat">
-      <span class="stat-val">±1.96</span>
-      <span class="stat-label">Critical z</span>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <span id="score-display">Score: 0 / 30</span>
+      <button class="btn-check-all" onclick="revealAll()">Reveal All Answers</button>
+      <button class="btn-reset" onclick="resetQuiz()">Reset</button>
     </div>
   </div>
 
-</div>
+  <!-- ══ QUESTIONS ══════════════════════════════════════════════════ -->
+  <div id="quiz-form">
+
+    <!-- ─ EASY ─────────────────────────────────────────────────────── -->
+    <div class="section-divider">
+      <span class="pill pill-easy">🟢 Easy — Questions 1–10</span>
+      <hr/>
+    </div>
+
+    <!-- Q1 -->
+    <div class="q-card" data-q="1" data-answer="B" data-difficulty="easy">
+      <div class="q-header">
+        <div class="q-num q-num-easy">1</div>
+        <div class="q-text">What is the <em>null hypothesis</em> (H₀) in hypothesis testing?</div>
+        <span class="q-topic">Fundamentals</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q1" value="A"/><span class="option-key">A</span> The hypothesis that there is a significant difference between groups.</label>
+        <label class="option-label"><input type="radio" name="q1" value="B"/><span class="option-key">B</span> The hypothesis that states there is no effect, no difference, or no relationship.</label>
+        <label class="option-label"><input type="radio" name="q1" value="C"/><span class="option-key">C</span> The hypothesis proposed by the researcher to be proved true.</label>
+        <label class="option-label"><input type="radio" name="q1" value="D"/><span class="option-key">D</span> A hypothesis that can never be rejected.</label>
+      </div>
+      <div class="q-feedback">H₀ represents the "default" position — no effect or no difference. We test evidence against it, and reject it only when data provide sufficiently strong evidence (p &lt; α).</div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-card" data-q="2" data-answer="C" data-difficulty="easy">
+      <div class="q-header">
+        <div class="q-num q-num-easy">2</div>
+        <div class="q-text">A z-test is most appropriate when:</div>
+        <span class="q-topic">Z-Test</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q2" value="A"/><span class="option-key">A</span> The population standard deviation is unknown and the sample is small.</label>
+        <label class="option-label"><input type="radio" name="q2" value="B"/><span class="option-key">B</span> The data is categorical with multiple categories.</label>
+        <label class="option-label"><input type="radio" name="q2" value="C"/><span class="option-key">C</span> The population standard deviation is known and the sample size is large (n ≥ 30).</label>
+        <label class="option-label"><input type="radio" name="q2" value="D"/><span class="option-key">D</span> You are comparing three or more group means.</label>
+      </div>
+      <div class="q-feedback">A z-test requires knowledge of σ (population SD) and benefits from large samples where the Central Limit Theorem ensures a normal sampling distribution.</div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-card" data-q="3" data-answer="A" data-difficulty="easy">
+      <div class="q-header">
+        <div class="q-num q-num-easy">3</div>
+        <div class="q-text">What does the <em>p-value</em> represent in hypothesis testing?</div>
+        <span class="q-topic">Fundamentals</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q3" value="A"/><span class="option-key">A</span> The probability of obtaining a test statistic at least as extreme as the observed one, assuming H₀ is true.</label>
+        <label class="option-label"><input type="radio" name="q3" value="B"/><span class="option-key">B</span> The probability that the null hypothesis is true.</label>
+        <label class="option-label"><input type="radio" name="q3" value="C"/><span class="option-key">C</span> The probability that the alternative hypothesis is correct.</label>
+        <label class="option-label"><input type="radio" name="q3" value="D"/><span class="option-key">D</span> The significance level chosen by the researcher.</label>
+      </div>
+      <div class="q-feedback">The p-value does NOT tell us the probability H₀ is true. It tells us: if H₀ were true, how likely is our observed result (or more extreme)? A small p-value means the data are unlikely under H₀.</div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q-card" data-q="4" data-answer="D" data-difficulty="easy">
+      <div class="q-header">
+        <div class="q-num q-num-easy">4</div>
+        <div class="q-text">A <em>Type I error</em> occurs when:</div>
+        <span class="q-topic">Error Types</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q4" value="A"/><span class="option-key">A</span> We fail to reject a false null hypothesis.</label>
+        <label class="option-label"><input type="radio" name="q4" value="B"/><span class="option-key">B</span> We correctly accept the null hypothesis.</label>
+        <label class="option-label"><input type="radio" name="q4" value="C"/><span class="option-key">C</span> The sample size is too small.</label>
+        <label class="option-label"><input type="radio" name="q4" value="D"/><span class="option-key">D</span> We reject a null hypothesis that is actually true.</label>
+      </div>
+      <div class="q-feedback">Type I error (false positive) = rejecting H₀ when it's true. Its probability is α (the significance level). Type II error (false negative) = failing to reject a false H₀, with probability β.</div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="q-card" data-q="5" data-answer="B" data-difficulty="easy">
+      <div class="q-header">
+        <div class="q-num q-num-easy">5</div>
+        <div class="q-text">In a one-sample t-test with n = 15 observations, the degrees of freedom (df) equals:</div>
+        <span class="q-topic">T-Test</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q5" value="A"/><span class="option-key">A</span> 15</label>
+        <label class="option-label"><input type="radio" name="q5" value="B"/><span class="option-key">B</span> 14</label>
+        <label class="option-label"><input type="radio" name="q5" value="C"/><span class="option-key">C</span> 16</label>
+        <label class="option-label"><input type="radio" name="q5" value="D"/><span class="option-key">D</span> 13</label>
+      </div>
+      <div class="q-feedback">For a one-sample t-test: df = n − 1 = 15 − 1 = 14. One degree of freedom is "used up" to estimate the sample mean (x̄) before we can estimate variability.</div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="q-card" data-q="6" data-answer="C" data-difficulty="easy">
+      <div class="q-header">
+        <div class="q-num q-num-easy">6</div>
+        <div class="q-text">ANOVA is used to compare:</div>
+        <span class="q-topic">ANOVA</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q6" value="A"/><span class="option-key">A</span> Proportions of two independent samples.</label>
+        <label class="option-label"><input type="radio" name="q6" value="B"/><span class="option-key">B</span> The variance of a single population.</label>
+        <label class="option-label"><input type="radio" name="q6" value="C"/><span class="option-key">C</span> Means of three or more independent groups simultaneously.</label>
+        <label class="option-label"><input type="radio" name="q6" value="D"/><span class="option-key">D</span> Frequencies in a contingency table.</label>
+      </div>
+      <div class="q-feedback">ANOVA (Analysis of Variance) compares means across 3+ groups in one test, avoiding the inflated Type I error that would result from running multiple t-tests.</div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="q-card" data-q="7" data-answer="A" data-difficulty="easy">
+      <div class="q-header">
+        <div class="q-num q-num-easy">7</div>
+        <div class="q-text">Which test is most appropriate for testing whether a <em>categorical variable</em> is independent of another categorical variable?</div>
+        <span class="q-topic">Chi-Square</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q7" value="A"/><span class="option-key">A</span> Chi-Square Test of Independence</label>
+        <label class="option-label"><input type="radio" name="q7" value="B"/><span class="option-key">B</span> One-sample t-test</label>
+        <label class="option-label"><input type="radio" name="q7" value="C"/><span class="option-key">C</span> One-way ANOVA</label>
+        <label class="option-label"><input type="radio" name="q7" value="D"/><span class="option-key">D</span> Z-test for proportions</label>
+      </div>
+      <div class="q-feedback">The chi-square test of independence determines whether two categorical variables are associated. For example: is political affiliation independent of gender? It uses a contingency table of observed vs expected frequencies.</div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="q-card" data-q="8" data-answer="D" data-difficulty="easy">
+      <div class="q-header">
+        <div class="q-num q-num-easy">8</div>
+        <div class="q-text">The critical value for a two-tailed z-test at significance level α = 0.05 is:</div>
+        <span class="q-topic">Z-Test</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q8" value="A"/><span class="option-key">A</span> ±1.28</label>
+        <label class="option-label"><input type="radio" name="q8" value="B"/><span class="option-key">B</span> ±1.65</label>
+        <label class="option-label"><input type="radio" name="q8" value="C"/><span class="option-key">C</span> ±2.58</label>
+        <label class="option-label"><input type="radio" name="q8" value="D"/><span class="option-key">D</span> ±1.96</label>
+      </div>
+      <div class="q-feedback">For α = 0.05 two-tailed, we split α into 0.025 per tail. z₀.₀₂₅ = 1.96. For α = 0.01 two-tailed: ±2.576. For α = 0.10 two-tailed: ±1.645. These are essential critical values to memorise.</div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="q-card" data-q="9" data-answer="B" data-difficulty="easy">
+      <div class="q-header">
+        <div class="q-num q-num-easy">9</div>
+        <div class="q-text">What is the chi-square statistic formula?</div>
+        <span class="q-topic">Chi-Square</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q9" value="A"/><span class="option-key">A</span> χ² = Σ (O + E) / E</label>
+        <label class="option-label"><input type="radio" name="q9" value="B"/><span class="option-key">B</span> χ² = Σ (O − E)² / E</label>
+        <label class="option-label"><input type="radio" name="q9" value="C"/><span class="option-key">C</span> χ² = Σ (O × E) / n</label>
+        <label class="option-label"><input type="radio" name="q9" value="D"/><span class="option-key">D</span> χ² = (O − E) / √E</label>
+      </div>
+      <div class="q-feedback">χ² = Σ[(O − E)² / E], summed over all cells. O = observed frequency, E = expected frequency. Squaring the difference ensures direction doesn't matter, and dividing by E gives a proportional measure of discrepancy.</div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="q-card" data-q="10" data-answer="C" data-difficulty="easy">
+      <div class="q-header">
+        <div class="q-num q-num-easy">10</div>
+        <div class="q-text">When should a <em>paired t-test</em> be used instead of an independent samples t-test?</div>
+        <span class="q-topic">T-Test</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q10" value="A"/><span class="option-key">A</span> When comparing two groups with very different sample sizes.</label>
+        <label class="option-label"><input type="radio" name="q10" value="B"/><span class="option-key">B</span> When the population standard deviation is known.</label>
+        <label class="option-label"><input type="radio" name="q10" value="C"/><span class="option-key">C</span> When each observation in one sample is matched or related to an observation in the other sample.</label>
+        <label class="option-label"><input type="radio" name="q10" value="D"/><span class="option-key">D</span> When the data is categorical.</label>
+      </div>
+      <div class="q-feedback">Paired t-tests are used for matched/related data — e.g., before-and-after measurements on the same subject, or matched controls. Pairing reduces variability and increases statistical power by controlling for individual differences.</div>
+    </div>
+
+    <!-- ─ MEDIUM ──────────────────────────────────────────────────── -->
+    <div class="section-divider">
+      <span class="pill pill-medium">🟡 Medium — Questions 11–20</span>
+      <hr/>
+    </div>
+
+    <!-- Q11 -->
+    <div class="q-card" data-q="11" data-answer="B" data-difficulty="medium">
+      <div class="q-header">
+        <div class="q-num q-num-medium">11</div>
+        <div class="q-text">In a one-way ANOVA with k = 4 groups and a total of N = 40 observations, what are the between-group and within-group degrees of freedom?</div>
+        <span class="q-topic">ANOVA</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q11" value="A"/><span class="option-key">A</span> df_between = 4, df_within = 36</label>
+        <label class="option-label"><input type="radio" name="q11" value="B"/><span class="option-key">B</span> df_between = 3, df_within = 36</label>
+        <label class="option-label"><input type="radio" name="q11" value="C"/><span class="option-key">C</span> df_between = 3, df_within = 40</label>
+        <label class="option-label"><input type="radio" name="q11" value="D"/><span class="option-key">D</span> df_between = 4, df_within = 40</label>
+      </div>
+      <div class="q-feedback">df_between = k − 1 = 4 − 1 = 3; df_within = N − k = 40 − 4 = 36. Total df = N − 1 = 39, which checks out (3 + 36 = 39). These df values are used to look up the critical F-value.</div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="q-card" data-q="12" data-answer="D" data-difficulty="medium">
+      <div class="q-header">
+        <div class="q-num q-num-medium">12</div>
+        <div class="q-text">Which assumption is <strong>NOT</strong> required for a one-way ANOVA?</div>
+        <span class="q-topic">ANOVA</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q12" value="A"/><span class="option-key">A</span> Independence of observations within and between groups.</label>
+        <label class="option-label"><input type="radio" name="q12" value="B"/><span class="option-key">B</span> Normality of the dependent variable within each group.</label>
+        <label class="option-label"><input type="radio" name="q12" value="C"/><span class="option-key">C</span> Homogeneity of variances across groups (Levene's test).</label>
+        <label class="option-label"><input type="radio" name="q12" value="D"/><span class="option-key">D</span> The dependent variable must be categorical.</label>
+      </div>
+      <div class="q-feedback">ANOVA requires a <em>continuous</em> (interval/ratio) dependent variable, not a categorical one. Chi-square tests handle categorical outcomes. The three core ANOVA assumptions are: independence, normality, and homogeneity of variance.</div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="q-card" data-q="13" data-answer="A" data-difficulty="medium">
+      <div class="q-header">
+        <div class="q-num q-num-medium">13</div>
+        <div class="q-text">A researcher runs a z-test and gets z = 2.10. Using α = 0.05 (two-tailed), what is the conclusion?</div>
+        <span class="q-topic">Z-Test</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q13" value="A"/><span class="option-key">A</span> Reject H₀; the test statistic exceeds the critical value of ±1.96.</label>
+        <label class="option-label"><input type="radio" name="q13" value="B"/><span class="option-key">B</span> Fail to reject H₀; the test statistic falls within the critical region.</label>
+        <label class="option-label"><input type="radio" name="q13" value="C"/><span class="option-key">C</span> Reject H₀; the test statistic exceeds ±2.58.</label>
+        <label class="option-label"><input type="radio" name="q13" value="D"/><span class="option-key">D</span> Accept H₀; there is a significant difference.</label>
+      </div>
+      <div class="q-feedback">|z| = 2.10 > 1.96 (the critical value at α = 0.05, two-tailed), so we reject H₀. Note: we never "accept" H₀; we either reject it or fail to reject it. The p-value here ≈ 0.036 &lt; 0.05.</div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="q-card" data-q="14" data-answer="C" data-difficulty="medium">
+      <div class="q-header">
+        <div class="q-num q-num-medium">14</div>
+        <div class="q-text">For a chi-square test of independence with a 3×4 contingency table, the degrees of freedom are:</div>
+        <span class="q-topic">Chi-Square</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q14" value="A"/><span class="option-key">A</span> 12</label>
+        <label class="option-label"><input type="radio" name="q14" value="B"/><span class="option-key">B</span> 7</label>
+        <label class="option-label"><input type="radio" name="q14" value="C"/><span class="option-key">C</span> 6</label>
+        <label class="option-label"><input type="radio" name="q14" value="D"/><span class="option-key">D</span> 11</label>
+      </div>
+      <div class="q-feedback">For a contingency table: df = (rows − 1) × (columns − 1) = (3 − 1) × (4 − 1) = 2 × 3 = 6. Each marginal total loses one degree of freedom.</div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="q-card" data-q="15" data-answer="B" data-difficulty="medium">
+      <div class="q-header">
+        <div class="q-num q-num-medium">15</div>
+        <div class="q-text">The F-statistic in ANOVA is calculated as:</div>
+        <span class="q-topic">ANOVA</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q15" value="A"/><span class="option-key">A</span> F = MS_within / MS_between</label>
+        <label class="option-label"><input type="radio" name="q15" value="B"/><span class="option-key">B</span> F = MS_between / MS_within</label>
+        <label class="option-label"><input type="radio" name="q15" value="C"/><span class="option-key">C</span> F = SS_total / SS_between</label>
+        <label class="option-label"><input type="radio" name="q15" value="D"/><span class="option-key">D</span> F = (x̄₁ − x̄₂) / SE</label>
+      </div>
+      <div class="q-feedback">F = MS_between / MS_within. A large F means between-group variability (due to the factor) is much larger than within-group variability (random error), suggesting the group means differ significantly. F is always ≥ 0.</div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="q-card" data-q="16" data-answer="D" data-difficulty="medium">
+      <div class="q-header">
+        <div class="q-num q-num-medium">16</div>
+        <div class="q-text">A researcher wants to compare blood pressure readings for the <em>same patients</em> before and after a medication. The most appropriate test is:</div>
+        <span class="q-topic">T-Test</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q16" value="A"/><span class="option-key">A</span> Independent samples t-test</label>
+        <label class="option-label"><input type="radio" name="q16" value="B"/><span class="option-key">B</span> One-way ANOVA</label>
+        <label class="option-label"><input type="radio" name="q16" value="C"/><span class="option-key">C</span> Chi-square goodness-of-fit test</label>
+        <label class="option-label"><input type="radio" name="q16" value="D"/><span class="option-key">D</span> Paired samples t-test</label>
+      </div>
+      <div class="q-feedback">Same subjects measured twice = matched/dependent data → paired t-test. It computes the difference (d = after − before) for each patient and tests H₀: μ_d = 0. This design controls for individual variation and is more powerful than an independent t-test.</div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="q-card" data-q="17" data-answer="A" data-difficulty="medium">
+      <div class="q-header">
+        <div class="q-num q-num-medium">17</div>
+        <div class="q-text">The <em>expected frequency</em> for a cell in a chi-square test of independence is calculated as:</div>
+        <span class="q-topic">Chi-Square</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q17" value="A"/><span class="option-key">A</span> E = (Row total × Column total) / Grand total</label>
+        <label class="option-label"><input type="radio" name="q17" value="B"/><span class="option-key">B</span> E = (Observed × Grand total) / n</label>
+        <label class="option-label"><input type="radio" name="q17" value="C"/><span class="option-key">C</span> E = Observed / Expected</label>
+        <label class="option-label"><input type="radio" name="q17" value="D"/><span class="option-key">D</span> E = n / (rows × columns)</label>
+      </div>
+      <div class="q-feedback">E_ij = (Row_i total × Column_j total) / N. This assumes independence — if the two variables were independent, the joint probability would be the product of the marginal probabilities. At least 80% of cells should have E ≥ 5 for validity.</div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="q-card" data-q="18" data-answer="C" data-difficulty="medium">
+      <div class="q-header">
+        <div class="q-num q-num-medium">18</div>
+        <div class="q-text">Which of the following correctly describes the relationship between α (significance level) and the power of a test?</div>
+        <span class="q-topic">Fundamentals</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q18" value="A"/><span class="option-key">A</span> Increasing α decreases the power of the test.</label>
+        <label class="option-label"><input type="radio" name="q18" value="B"/><span class="option-key">B</span> Power is completely independent of α.</label>
+        <label class="option-label"><input type="radio" name="q18" value="C"/><span class="option-key">C</span> Increasing α increases the power of the test, but also increases the Type I error rate.</label>
+        <label class="option-label"><input type="radio" name="q18" value="D"/><span class="option-key">D</span> Decreasing α increases both power and Type II error rate.</label>
+      </div>
+      <div class="q-feedback">Raising α widens the rejection region → more likely to reject H₀ (both correctly and incorrectly) → higher power (1 − β) but more Type I errors. This classic trade-off is why α is set conservatively (e.g., 0.05). Power also depends on effect size and sample size.</div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="q-card" data-q="19" data-answer="B" data-difficulty="medium">
+      <div class="q-header">
+        <div class="q-num q-num-medium">19</div>
+        <div class="q-text">An independent samples t-test assumes which of the following about the two populations?</div>
+        <span class="q-topic">T-Test</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q19" value="A"/><span class="option-key">A</span> They must have exactly equal sample sizes.</label>
+        <label class="option-label"><input type="radio" name="q19" value="B"/><span class="option-key">B</span> They have approximately equal variances (homogeneity of variance).</label>
+        <label class="option-label"><input type="radio" name="q19" value="C"/><span class="option-key">C</span> The populations must be perfectly normally distributed regardless of n.</label>
+        <label class="option-label"><input type="radio" name="q19" value="D"/><span class="option-key">D</span> The populations must have the same mean under H₁.</label>
+      </div>
+      <div class="q-feedback">The standard (pooled) independent t-test assumes σ₁² ≈ σ₂² (Levene's test checks this). If variances differ significantly, use Welch's t-test, which adjusts the degrees of freedom using the Welch–Satterthwaite equation. Equal sample sizes are not required.</div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="q-card" data-q="20" data-answer="D" data-difficulty="medium">
+      <div class="q-header">
+        <div class="q-num q-num-medium">20</div>
+        <div class="q-text">A chi-square goodness-of-fit test with 5 categories will have how many degrees of freedom?</div>
+        <span class="q-topic">Chi-Square</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q20" value="A"/><span class="option-key">A</span> 5</label>
+        <label class="option-label"><input type="radio" name="q20" value="B"/><span class="option-key">B</span> 3</label>
+        <label class="option-label"><input type="radio" name="q20" value="C"/><span class="option-key">C</span> 6</label>
+        <label class="option-label"><input type="radio" name="q20" value="D"/><span class="option-key">D</span> 4</label>
+      </div>
+      <div class="q-feedback">For a goodness-of-fit test: df = k − 1 = 5 − 1 = 4, where k = number of categories. One degree of freedom is lost because all expected frequencies must sum to n (a constraint). If parameters are estimated from data, additional df are lost.</div>
+    </div>
+
+    <!-- ─ HARD ───────────────────────────────────────────────────── -->
+    <div class="section-divider">
+      <span class="pill pill-hard">🔴 Hard — Questions 21–30</span>
+      <hr/>
+    </div>
+
+    <!-- Q21 -->
+    <div class="q-card" data-q="21" data-answer="C" data-difficulty="hard">
+      <div class="q-header">
+        <div class="q-num q-num-hard">21</div>
+        <div class="q-text">When ANOVA yields a significant F-test, a researcher conducts Tukey's HSD post-hoc test. Why is post-hoc testing necessary?</div>
+        <span class="q-topic">ANOVA</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q21" value="A"/><span class="option-key">A</span> To recalculate the F-statistic with better precision.</label>
+        <label class="option-label"><input type="radio" name="q21" value="B"/><span class="option-key">B</span> To verify that the ANOVA assumptions were not violated.</label>
+        <label class="option-label"><input type="radio" name="q21" value="C"/><span class="option-key">C</span> To identify <em>which specific pairs</em> of group means differ, while controlling the family-wise error rate.</label>
+        <label class="option-label"><input type="radio" name="q21" value="D"/><span class="option-key">D</span> To increase the degrees of freedom of the test.</label>
+      </div>
+      <div class="q-feedback">A significant F only tells us <em>at least one</em> mean differs — not which ones. Post-hoc tests (Tukey's HSD, Bonferroni, Scheffé, Dunnett's) make all pairwise comparisons while controlling FWER. Tukey's HSD is preferred when all pairwise comparisons are of equal interest and group sizes are equal.</div>
+    </div>
+
+    <!-- Q22 -->
+    <div class="q-card" data-q="22" data-answer="A" data-difficulty="hard">
+      <div class="q-header">
+        <div class="q-num q-num-hard">22</div>
+        <div class="q-text">Welch's t-test differs from the standard independent samples t-test primarily in that it:</div>
+        <span class="q-topic">T-Test</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q22" value="A"/><span class="option-key">A</span> Does not assume equal population variances and adjusts degrees of freedom using the Welch–Satterthwaite equation.</label>
+        <label class="option-label"><input type="radio" name="q22" value="B"/><span class="option-key">B</span> Uses the z-distribution rather than the t-distribution.</label>
+        <label class="option-label"><input type="radio" name="q22" value="C"/><span class="option-key">C</span> Requires matched/paired observations.</label>
+        <label class="option-label"><input type="radio" name="q22" value="D"/><span class="option-key">D</span> Pools the sample variances to estimate the common population variance.</label>
+      </div>
+      <div class="q-feedback">Welch's t-test relaxes the homogeneity of variance assumption by using separate variance estimates for each group and applying the Welch–Satterthwaite approximation to compute adjusted (non-integer) df. It is generally recommended as the default over the pooled t-test.</div>
+    </div>
+
+    <!-- Q23 -->
+    <div class="q-card" data-q="23" data-answer="D" data-difficulty="hard">
+      <div class="q-header">
+        <div class="q-num q-num-hard">23</div>
+        <div class="q-text">Cohen's d for effect size in a two-sample t-test is calculated as:</div>
+        <span class="q-topic">T-Test</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q23" value="A"/><span class="option-key">A</span> d = (x̄₁ − x̄₂) / n</label>
+        <label class="option-label"><input type="radio" name="q23" value="B"/><span class="option-key">B</span> d = t / √n</label>
+        <label class="option-label"><input type="radio" name="q23" value="C"/><span class="option-key">C</span> d = (x̄₁ − x̄₂) / s₁</label>
+        <label class="option-label"><input type="radio" name="q23" value="D"/><span class="option-key">D</span> d = (x̄₁ − x̄₂) / s_pooled</label>
+      </div>
+      <div class="q-feedback">Cohen's d = (x̄₁ − x̄₂) / s_pooled, where s_pooled = √[(s₁²(n₁−1) + s₂²(n₂−1)) / (n₁+n₂−2)]. Benchmarks: d = 0.2 (small), 0.5 (medium), 0.8 (large). Statistical significance ≠ practical significance; large n can make tiny effects significant.</div>
+    </div>
+
+    <!-- Q24 -->
+    <div class="q-card" data-q="24" data-answer="B" data-difficulty="hard">
+      <div class="q-header">
+        <div class="q-num q-num-hard">24</div>
+        <div class="q-text">In a two-way ANOVA, what does a significant <em>interaction effect</em> indicate?</div>
+        <span class="q-topic">ANOVA</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q24" value="A"/><span class="option-key">A</span> Both main effects are significant.</label>
+        <label class="option-label"><input type="radio" name="q24" value="B"/><span class="option-key">B</span> The effect of one independent variable on the dependent variable differs depending on the level of the other independent variable.</label>
+        <label class="option-label"><input type="radio" name="q24" value="C"/><span class="option-key">C</span> The two independent variables are correlated with each other.</label>
+        <label class="option-label"><input type="radio" name="q24" value="D"/><span class="option-key">D</span> The grand mean is significantly different from zero.</label>
+      </div>
+      <div class="q-feedback">An interaction (A×B) means the effect of factor A depends on the level of factor B — the lines in an interaction plot are non-parallel. When interactions are present, main effects must be interpreted cautiously, as simple effects may be more meaningful.</div>
+    </div>
+
+    <!-- Q25 -->
+    <div class="q-card" data-q="25" data-answer="C" data-difficulty="hard">
+      <div class="q-header">
+        <div class="q-num q-num-hard">25</div>
+        <div class="q-text">Yates' continuity correction is applied to the chi-square test when:</div>
+        <span class="q-topic">Chi-Square</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q25" value="A"/><span class="option-key">A</span> The sample size exceeds 200 observations.</label>
+        <label class="option-label"><input type="radio" name="q25" value="B"/><span class="option-key">B</span> All expected frequencies are greater than 10.</label>
+        <label class="option-label"><input type="radio" name="q25" value="C"/><span class="option-key">C</span> The contingency table is 2×2 and expected frequencies are small (< 5 in any cell).</label>
+        <label class="option-label"><input type="radio" name="q25" value="D"/><span class="option-key">D</span> The chi-square value exceeds the critical value.</label>
+      </div>
+      <div class="q-feedback">Yates' correction subtracts 0.5 from |O − E| before squaring — χ² = Σ(|O − E| − 0.5)² / E — to reduce the overestimation of chi-square in 2×2 tables with small expected counts. However, Fisher's Exact Test is often preferred for 2×2 tables when any E &lt; 5.</div>
+    </div>
+
+    <!-- Q26 -->
+    <div class="q-card" data-q="26" data-answer="A" data-difficulty="hard">
+      <div class="q-header">
+        <div class="q-num q-num-hard">26</div>
+        <div class="q-text">What is the non-parametric equivalent of the one-way ANOVA when assumptions of normality are violated?</div>
+        <span class="q-topic">ANOVA</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q26" value="A"/><span class="option-key">A</span> Kruskal–Wallis H test</label>
+        <label class="option-label"><input type="radio" name="q26" value="B"/><span class="option-key">B</span> Mann–Whitney U test</label>
+        <label class="option-label"><input type="radio" name="q26" value="C"/><span class="option-key">C</span> Wilcoxon signed-rank test</label>
+        <label class="option-label"><input type="radio" name="q26" value="D"/><span class="option-key">D</span> Friedman test</label>
+      </div>
+      <div class="q-feedback">The Kruskal–Wallis test is the rank-based non-parametric alternative to one-way ANOVA, comparing 3+ independent groups. Mann–Whitney U: two independent groups. Wilcoxon signed-rank: paired data. Friedman: repeated measures (non-parametric two-way ANOVA).</div>
+    </div>
+
+    <!-- Q27 -->
+    <div class="q-card" data-q="27" data-answer="D" data-difficulty="hard">
+      <div class="q-header">
+        <div class="q-num q-num-hard">27</div>
+        <div class="q-text">In hypothesis testing, increasing the sample size (n) while keeping everything else constant will:</div>
+        <span class="q-topic">Fundamentals</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q27" value="A"/><span class="option-key">A</span> Increase the probability of a Type I error.</label>
+        <label class="option-label"><input type="radio" name="q27" value="B"/><span class="option-key">B</span> Decrease the power of the test.</label>
+        <label class="option-label"><input type="radio" name="q27" value="C"/><span class="option-key">C</span> Increase the standard error of the mean.</label>
+        <label class="option-label"><input type="radio" name="q27" value="D"/><span class="option-key">D</span> Decrease the standard error, narrow the confidence interval, and increase the power of the test.</label>
+      </div>
+      <div class="q-feedback">SE = σ/√n, so increasing n decreases SE → smaller confidence intervals → larger test statistics for the same effect → higher power. However, very large samples can make trivially small, practically meaningless differences statistically significant — always consider effect size alongside p-values.</div>
+    </div>
+
+    <!-- Q28 -->
+    <div class="q-card" data-q="28" data-answer="B" data-difficulty="hard">
+      <div class="q-header">
+        <div class="q-num q-num-hard">28</div>
+        <div class="q-text">The eta-squared (η²) statistic in ANOVA represents:</div>
+        <span class="q-topic">ANOVA</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q28" value="A"/><span class="option-key">A</span> The probability that the F-test is significant.</label>
+        <label class="option-label"><input type="radio" name="q28" value="B"/><span class="option-key">B</span> The proportion of total variance in the dependent variable explained by the grouping factor (effect size).</label>
+        <label class="option-label"><input type="radio" name="q28" value="C"/><span class="option-key">C</span> The ratio of within-group to between-group variance.</label>
+        <label class="option-label"><input type="radio" name="q28" value="D"/><span class="option-key">D</span> The mean difference between the largest and smallest group means.</label>
+      </div>
+      <div class="q-feedback">η² = SS_between / SS_total, ranging 0 to 1. Benchmarks (Cohen): η² = 0.01 (small), 0.06 (medium), 0.14 (large). Partial η² (η²_p) is preferred in multi-factor ANOVA; omega-squared (ω²) is less biased than η² and better for generalization.</div>
+    </div>
+
+    <!-- Q29 -->
+    <div class="q-card" data-q="29" data-answer="C" data-difficulty="hard">
+      <div class="q-header">
+        <div class="q-num q-num-hard">29</div>
+        <div class="q-text">A z-test for the difference between two population proportions uses the <em>pooled proportion</em> (p̂) under H₀. The correct formula for p̂ is:</div>
+        <span class="q-topic">Z-Test</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q29" value="A"/><span class="option-key">A</span> p̂ = (p̂₁ + p̂₂) / 2</label>
+        <label class="option-label"><input type="radio" name="q29" value="B"/><span class="option-key">B</span> p̂ = p̂₁ × p̂₂</label>
+        <label class="option-label"><input type="radio" name="q29" value="C"/><span class="option-key">C</span> p̂ = (x₁ + x₂) / (n₁ + n₂)</label>
+        <label class="option-label"><input type="radio" name="q29" value="D"/><span class="option-key">D</span> p̂ = (n₁p̂₁ − n₂p̂₂) / (n₁ + n₂)</label>
+      </div>
+      <div class="q-feedback">Under H₀: p₁ = p₂, we pool: p̂ = (x₁ + x₂)/(n₁ + n₂), where x₁, x₂ are the counts of successes. This uses all available data to get the best single estimate of the common proportion. The SE is then √[p̂(1−p̂)(1/n₁+1/n₂)].</div>
+    </div>
+
+    <!-- Q30 -->
+    <div class="q-card" data-q="30" data-answer="A" data-difficulty="hard">
+      <div class="q-header">
+        <div class="q-num q-num-hard">30</div>
+        <div class="q-text">A study applies one-way ANOVA and finds F(3, 56) = 4.82, p = 0.004. Tukey's HSD post-hoc at α = 0.05 shows only Group 1 vs. Group 3 is significant. Which of the following is the most correct interpretation?</div>
+        <span class="q-topic">ANOVA</span>
+      </div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q30" value="A"/><span class="option-key">A</span> There is a significant overall difference among the 4 group means (p = 0.004), and specifically the mean of Group 1 differs significantly from Group 3 after controlling for multiple comparisons.</label>
+        <label class="option-label"><input type="radio" name="q30" value="B"/><span class="option-key">B</span> Group 1 and Group 3 are the only groups that exist; all others are noise.</label>
+        <label class="option-label"><input type="radio" name="q30" value="C"/><span class="option-key">C</span> Since only one pair is significant, the overall F-test result should be ignored.</label>
+        <label class="option-label"><input type="radio" name="q30" value="D"/><span class="option-key">D</span> The ANOVA is invalid because not all pairwise comparisons are significant.</label>
+      </div>
+      <div class="q-feedback">F(3, 56) = 4.82, p = 0.004 → overall significance is real. Post-hoc narrows it: the Group 1 vs. Group 3 difference drives this result. Not all pairs need to be significant — Tukey's HSD controls FWER at 0.05 across all 6 pairwise comparisons. This is textbook ANOVA + post-hoc interpretation.</div>
+    </div>
+
+  </div><!-- /quiz-form -->
+
+  <!-- ══ SCORE PANEL ════════════════════════════════════════════════ -->
+  <div class="score-panel" id="score-panel">
+    <div class="score-big" id="final-score">—</div>
+    <div class="score-label">out of 30</div>
+    <div class="score-msg" id="score-msg"></div>
+    <div class="score-breakdown">
+      <span class="sb-item">Easy: <strong id="sb-easy">0/10</strong></span>
+      <span class="sb-item">Medium: <strong id="sb-medium">0/10</strong></span>
+      <span class="sb-item">Hard: <strong id="sb-hard">0/10</strong></span>
+    </div>
+  </div>
+
+  <!-- ══ ANSWER KEY ═════════════════════════════════════════════════ -->
+  <div class="answer-key-section">
+    <div class="ak-header">
+      <h2>Answer Key</h2>
+      <span>🟢 Easy &nbsp;·&nbsp; 🟡 Medium &nbsp;·&nbsp; 🔴 Hard</span>
+    </div>
+    <div class="ak-grid" id="answer-key-grid">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+</div><!-- /wrapper -->
+
+<footer>
+  Hypothesis Testing Quiz · 30 Questions · t-test · z-test · ANOVA · Chi-Square &nbsp;·&nbsp; Statistical Inference
+</footer>
+
+<script>
+  const answers = {
+    1:  { ans: 'B', topic: 'Fundamentals',  diff: 'easy' },
+    2:  { ans: 'C', topic: 'Z-Test',        diff: 'easy' },
+    3:  { ans: 'A', topic: 'Fundamentals',  diff: 'easy' },
+    4:  { ans: 'D', topic: 'Error Types',   diff: 'easy' },
+    5:  { ans: 'B', topic: 'T-Test',        diff: 'easy' },
+    6:  { ans: 'C', topic: 'ANOVA',         diff: 'easy' },
+    7:  { ans: 'A', topic: 'Chi-Square',    diff: 'easy' },
+    8:  { ans: 'D', topic: 'Z-Test',        diff: 'easy' },
+    9:  { ans: 'B', topic: 'Chi-Square',    diff: 'easy' },
+    10: { ans: 'C', topic: 'T-Test',        diff: 'easy' },
+    11: { ans: 'B', topic: 'ANOVA',         diff: 'medium' },
+    12: { ans: 'D', topic: 'ANOVA',         diff: 'medium' },
+    13: { ans: 'A', topic: 'Z-Test',        diff: 'medium' },
+    14: { ans: 'C', topic: 'Chi-Square',    diff: 'medium' },
+    15: { ans: 'B', topic: 'ANOVA',         diff: 'medium' },
+    16: { ans: 'D', topic: 'T-Test',        diff: 'medium' },
+    17: { ans: 'A', topic: 'Chi-Square',    diff: 'medium' },
+    18: { ans: 'C', topic: 'Fundamentals',  diff: 'medium' },
+    19: { ans: 'B', topic: 'T-Test',        diff: 'medium' },
+    20: { ans: 'D', topic: 'Chi-Square',    diff: 'medium' },
+    21: { ans: 'C', topic: 'ANOVA',         diff: 'hard' },
+    22: { ans: 'A', topic: 'T-Test',        diff: 'hard' },
+    23: { ans: 'D', topic: 'T-Test',        diff: 'hard' },
+    24: { ans: 'B', topic: 'ANOVA',         diff: 'hard' },
+    25: { ans: 'C', topic: 'Chi-Square',    diff: 'hard' },
+    26: { ans: 'A', topic: 'ANOVA',         diff: 'hard' },
+    27: { ans: 'D', topic: 'Fundamentals',  diff: 'hard' },
+    28: { ans: 'B', topic: 'ANOVA',         diff: 'hard' },
+    29: { ans: 'C', topic: 'Z-Test',        diff: 'hard' },
+    30: { ans: 'A', topic: 'ANOVA',         diff: 'hard' },
+  };
+
+  let score = { correct: 0, easy: 0, medium: 0, hard: 0 };
+  let answered = {};
+
+  // Build answer key grid
+  const grid = document.getElementById('answer-key-grid');
+  Object.entries(answers).forEach(([q, { ans, topic, diff }]) => {
+    const cell = document.createElement('div');
+    cell.className = `ak-cell ak-${diff}`;
+    cell.innerHTML = `<span class="ak-qn">Q${q}</span>
+      <span class="ak-ans">${ans}</span>
+      <span class="ak-topic">${topic}</span>`;
+    grid.appendChild(cell);
+  });
+
+  // Attach listeners
+  document.querySelectorAll('.q-card').forEach(card => {
+    const qNum = +card.dataset.q;
+    const correct = answers[qNum].ans;
+    const diff = answers[qNum].diff;
+    const feedback = card.querySelector('.q-feedback');
+
+    card.querySelectorAll('input[type="radio"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        if (answered[qNum]) return; // already answered
+        answered[qNum] = radio.value;
+
+        const isCorrect = radio.value === correct;
+        if (isCorrect) {
+          score.correct++;
+          score[diff]++;
+        }
+
+        // Style options
+        card.querySelectorAll('.option-label').forEach(lbl => {
+          const val = lbl.querySelector('input').value;
+          if (val === correct) { lbl.classList.add('correct'); }
+          else if (val === radio.value && !isCorrect) { lbl.classList.add('wrong'); }
+          lbl.querySelector('input').disabled = true;
+        });
+
+        // Show feedback
+        feedback.classList.add('show', isCorrect ? 'fb-correct' : 'fb-wrong');
+        if (!isCorrect) {
+          feedback.innerHTML = `<strong>Correct answer: ${correct}.</strong> &nbsp;` + feedback.innerHTML;
+        }
+
+        updateScore();
+      });
+    });
+  });
+
+  function updateScore() {
+    const total = Object.keys(answered).length;
+    document.getElementById('score-display').textContent =
+      `Score: ${score.correct} / ${total} answered`;
+
+    if (total === 30) {
+      showFinalScore();
+    }
+  }
+
+  function showFinalScore() {
+    const panel = document.getElementById('score-panel');
+    panel.classList.add('show');
+    document.getElementById('final-score').textContent = score.correct;
+    document.getElementById('sb-easy').textContent = `${score.easy}/10`;
+    document.getElementById('sb-medium').textContent = `${score.medium}/10`;
+    document.getElementById('sb-hard').textContent = `${score.hard}/10`;
+    const pct = (score.correct / 30) * 100;
+    let msg;
+    if (pct >= 90) msg = "Outstanding! You have mastered hypothesis testing.";
+    else if (pct >= 75) msg = "Excellent work — strong command of statistical inference.";
+    else if (pct >= 60) msg = "Good effort! Review the topics where you lost marks.";
+    else if (pct >= 40) msg = "Keep studying — revisit the summary section and try again.";
+    else msg = "Hypothesis testing takes practice. Study the concepts and retake the quiz!";
+    document.getElementById('score-msg').textContent = msg;
+    panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function revealAll() {
+    document.querySelectorAll('.q-card').forEach(card => {
+      const qNum = +card.dataset.q;
+      if (answered[qNum]) return;
+      const correct = answers[qNum].ans;
+      const diff = card.dataset.difficulty;
+      answered[qNum] = '__revealed__';
+
+      card.querySelectorAll('.option-label').forEach(lbl => {
+        const val = lbl.querySelector('input').value;
+        if (val === correct) lbl.classList.add('correct');
+        lbl.querySelector('input').disabled = true;
+      });
+      const fb = card.querySelector('.q-feedback');
+      fb.classList.add('show', 'fb-correct');
+    });
+    document.getElementById('score-display').textContent =
+      `Score: ${score.correct} / 30`;
+    if (Object.keys(answered).length === 30) showFinalScore();
+  }
+
+  function resetQuiz() {
+    answered = {};
+    score = { correct: 0, easy: 0, medium: 0, hard: 0 };
+    document.getElementById('score-display').textContent = 'Score: 0 / 30';
+    document.getElementById('score-panel').classList.remove('show');
+
+    document.querySelectorAll('.q-card').forEach(card => {
+      card.querySelectorAll('.option-label').forEach(lbl => {
+        lbl.classList.remove('correct', 'wrong');
+        const inp = lbl.querySelector('input');
+        inp.checked = false;
+        inp.disabled = false;
+      });
+      const fb = card.querySelector('.q-feedback');
+      fb.classList.remove('show', 'fb-correct', 'fb-wrong');
+      // remove injected "Correct answer:" prefix
+      const orig = fb.innerHTML.replace(/<strong>Correct answer: [A-D]\.<\/strong>\s*&nbsp;/, '');
+      fb.innerHTML = orig;
+    });
+  }
+</script>
 </body>
 </html>
